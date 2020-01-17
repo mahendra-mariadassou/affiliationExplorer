@@ -1,0 +1,12 @@
+Package: affiliationExplorer
+Title: Resolve multiaffilations from FROGS
+Version: 0.0.0.9000
+Authors@R: person('Sandra', 'Derozier', email = 'sandra.derozier@inrae.fr', role = c('cre', 'aut'))
+Description: Shiny app to help user choose one affilation among equally good ones.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    shiny, 
+    golem
+RoxygenNote: 6.1.0
