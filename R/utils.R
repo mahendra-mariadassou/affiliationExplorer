@@ -1,5 +1,5 @@
 ## Template for reading biom file 
-read_frogs_biom <- function(biomfile) {
+read_frogs_biom <- function(biom_file) {
   phyloseq.extended::import_frogs(biom_file)
 }
 
@@ -28,7 +28,7 @@ create_otu_dictionary <- function(physeq) {
     dplyr::arrange(desc(abundance))
   ## If all taxa names are long, sequences are likely to have been processed by DADA
   ## Move OTU names to sequence column and rename OTU with shorter names
-  if (long_taxa_names(otu_dictionary$OTU)) {
+  if (long_taxa_names(otu_dictionary$sequence)) {
    otu_dictionary <- otu_dictionary %>% dplyr::mutate(OTU = paste0("ASV", 1:n()))
   } else {
     otu_dictionary <- otu_dictionary %>% dplyr::mutate(OTU = sequence)
@@ -43,10 +43,10 @@ sanitize_physeq_and_affi <- function(physeq, affi) {
   
   ## Add abundance information to affiliation table
   affi <- inner_join(otu_dictionary, affi, by = c("sequence" = "#observation_name")) %>% 
-    tidyr::separate(blast_taxonomy, into = rank_names(physeq), sep = ";")
+    tidyr::separate(blast_taxonomy, into = phyloseq::rank_names(physeq), sep = ";")
   
   ## Rename taxa in physeq object
-  taxa_names(physeq) <- sequence_to_asv[taxa_names(physeq)] %>% unname()
+  phyloseq::taxa_names(physeq) <- old_to_new[phyloseq::taxa_names(physeq)] %>% unname()
   
   ## Remove previously curated taxa from affi
   affi <- affi %>% filter(OTU %in% ambiguous_taxa(physeq))
@@ -68,4 +68,14 @@ extract_affiliation <- function(affi, otu) {
   affi %>% 
     dplyr::filter(OTU == otu) %>% 
     dplyr::select(Kingdom:Species)
+}
+
+## Find level of ambiguity
+find_level <- function(data) {
+  not_consistent <- function(x) { !all(x == x[1]) }
+  rank_names <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+  for (rank in rank_names) {
+    rank_content <- data[[rank]]
+    if (not_consistent(rank_content)) return(rank)
+  }
 }
