@@ -37,7 +37,7 @@ usethis::use_git()
 ## 1.3 - Add a data-raw folder
 ## 
 ## If you have data in your package
-usethis::use_data_raw( name = "my_dataset", open = FALSE ) # Change "my_dataset"
+usethis::use_data_raw( name = "test_data", open = FALSE ) # Change "my_dataset"
 
 ## 1.4 - Init Tests
 ## 
@@ -52,8 +52,8 @@ golem::use_recommended_deps()
 ## 1.6 Add various tools
 
 # If you want to change the favicon (default is golem's one)
-golem::remove_favicon()
-golem::use_favicon() # path = "path/to/ico". Can be an online file. 
+# golem::remove_favicon()
+# golem::use_favicon() # path = "path/to/ico". Can be an online file. 
 
 # Add helper functions 
 golem::use_utils_ui()
