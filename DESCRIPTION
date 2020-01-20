@@ -10,6 +10,8 @@ Description: Shiny app to help user choose one affilation among equally good one
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+biocViews:
+RoxygenNote: 6.1.0
 Imports: 
     shiny,
     golem,
@@ -17,7 +19,14 @@ Imports:
     attempt,
     DT,
     glue,
-    htmltools
-RoxygenNote: 6.1.0
+    htmltools,
+    phyloseq,
+    dplyr,
+    phyloseq.extended (>= 0.1.0.9000),
+    biomformat,
+    tidyr,
+    magrittr
+Remotes: 
+    mahendra-mariadassou/phyloseq-extended@dev    
 Suggests: 
     testthat
