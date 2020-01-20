@@ -1,7 +1,11 @@
 Package: affiliationExplorer
 Title: Resolve multiaffilations from FROGS
 Version: 0.0.0.9000
-Authors@R: person('Sandra', 'Derozier', email = 'sandra.derozier@inrae.fr', role = c('cre', 'aut'))
+Authors@R: c(
+  person('Sandra', 'Derozier', email = 'sandra.derozier@inrae.fr', role = c('cre', 'aut')),
+  person("Mahendra", "Mariadassou", role = "aut", email = "mahendra.mariadassou@inrae.fr", 
+      comment = c(ORCID = "0000-0003-2986-354X"))
+  )
 Description: Shiny app to help user choose one affilation among equally good ones.
 License: MIT + file LICENSE
 Encoding: UTF-8
