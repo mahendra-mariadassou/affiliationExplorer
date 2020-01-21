@@ -29,10 +29,7 @@ app_server <- function(input, output, session) {
       data <- extract_affiliation(all$affi, input$asv)
       amb <- find_level(data)
       output$txt <- renderUI({paste(input$asv, "- ", nrow(data) ," affiliation, ambiguity at rank ", amb)})
-      output$table <- renderTable({data})
-      # output$table <- renderFlexTable({
-      #   mymtcars$Name <- paste0('<label><input type="radio" id="name', seq_along(names(data)), '"> <span>', names(data), '</span></label>')
-      # })
+      output$table <- DT::renderDT({data})
     })
     
   })

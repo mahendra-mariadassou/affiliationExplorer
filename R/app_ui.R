@@ -33,7 +33,7 @@ app_ui <- function() {
                 solidHeader = T,
                 htmlOutput("txt"),
                 HTML("<br/>"),
-                tableOutput("table")
+                DT::DTOutput("table")
             )
           )
         )
