@@ -29,7 +29,8 @@ create_otu_dictionary <- function(physeq) {
   ## If all taxa names are long, sequences are likely to have been processed by DADA
   ## Move OTU names to sequence column and rename OTU with shorter names
   if (long_taxa_names(otu_dictionary$sequence)) {
-   otu_dictionary <- otu_dictionary %>% dplyr::mutate(OTU = paste0("ASV", 1:n()))
+   otu_dictionary <- otu_dictionary %>% 
+     dplyr::mutate(OTU = paste0("ASV", 1:nrow(otu_dictionary)))
   } else {
     otu_dictionary <- otu_dictionary %>% dplyr::mutate(OTU = sequence)
   }
