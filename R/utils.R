@@ -43,14 +43,14 @@ sanitize_physeq_and_affi <- function(physeq, affi) {
   old_to_new <- otu_dictionary %>% dplyr::select(-abundance) %>% tibble::deframe()
   
   ## Add abundance information to affiliation table
-  affi <- inner_join(otu_dictionary, affi, by = c("sequence" = "#observation_name")) %>% 
+  affi <- dplyr::inner_join(otu_dictionary, affi, by = c("sequence" = "#observation_name")) %>% 
     tidyr::separate(blast_taxonomy, into = phyloseq::rank_names(physeq), sep = ";")
   
   ## Rename taxa in physeq object
   phyloseq::taxa_names(physeq) <- old_to_new[phyloseq::taxa_names(physeq)] %>% unname()
   
   ## Remove previously curated taxa from affi
-  affi <- affi %>% filter(OTU %in% ambiguous_taxa(physeq))
+  affi <- affi %>% dplyr::filter(OTU %in% ambiguous_taxa(physeq))
   
   list(
     physeq         = physeq, 
