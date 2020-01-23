@@ -30,17 +30,21 @@ app_server <- function(input, output, session) {
       amb <- find_level(data)
       output$txt <- renderUI({paste(input$asv, "- ", nrow(data) ," affiliation, ambiguity at rank ", amb)})
       output$table <- DT::renderDT({data}, selection = 'single')
-      #output$selection <- renderUI({paste(output$table$tableId_rows_selected)})
       
       output$selection <- renderUI({
         s = input$table_rows_selected
         if (length(s)) {
-          # cat('These rows were selected: ')
-          # cat(s, sep = ', ')
           paste("These rows were selected: ", s)
         }
       })
     })
     
+    output$download <- downloadHandler(
+      filename = function() {
+        paste('data-', Sys.Date(), '.csv', sep='')
+      },
+      content = function(con) {
+        write.csv(data, con)
+      })
   })
 }

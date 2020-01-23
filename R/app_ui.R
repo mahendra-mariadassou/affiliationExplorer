@@ -15,11 +15,11 @@ app_ui <- function() {
       dashboardSidebar(
         fileInput("biom",
                   "Upload Biom File",
-                  accept = c(".biom")
+                  accept = c("text/plain", ".biom")
                  ),
         fileInput("tsv",
                   "Upload MultiHits TSV File",
-                  accept = c("text/csv", ".tsv")
+                  accept = c("text/tab-separated-values", ".tsv", "text/csv")
                  ),
         textOutput("tmp")
       ),
@@ -35,7 +35,10 @@ app_ui <- function() {
                 HTML("<br/>"),
                 DT::DTOutput("table"),
                 HTML("<br/>"),
-                htmlOutput("selection")
+                htmlOutput("selection"),
+                HTML("<br/>"),
+                actionButton("clean", "Clean ASV"),
+                downloadButton("download", "Download")
             )
           )
         )
