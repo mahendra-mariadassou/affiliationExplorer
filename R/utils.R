@@ -59,6 +59,8 @@ sanitize_physeq_and_affi <- function(physeq, affi) {
   )
 }
 
+## Other utilities ------------------------------------------
+
 ## Order OTU by priority level
 sort_ambiguous_otu <- function(physeq, affi) {
   affi %>% dplyr::arrange(desc(abundance)) %>% dplyr::pull(OTU)
@@ -79,4 +81,7 @@ find_level <- function(data) {
     rank_content <- data[[rank]]
     if (not_consistent(rank_content)) return(rank)
   }
+  warning("The provided taxa is not ambiguous")
+  NULL
 }
+
