@@ -15,7 +15,7 @@ golem::add_module( name = "Main" ) # Name of the module
 usethis::use_pipe()
 
 usethis::use_package("shinydashboard")
-#usethis::use_package("shinycssloaders")
+usethis::use_package("shinycssloaders")
 #usethis::use_package("ReporteRs")
 usethis::use_package( "phyloseq" ) # To call each time you need a new package
 usethis::use_package( "biomformat" )

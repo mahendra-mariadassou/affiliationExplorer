@@ -1,6 +1,7 @@
 #' @import shiny
-#' @importFrom DT DT
+#' @importFrom DT renderDT
 #' @importFrom phyloseq tax_table
+#' @importFrom phyloseq.extended write_phyloseq
 app_server <- function(input, output, session) {
   # Load package data in the session (for testing purpose)
   # data("physeq", package = "affiliationExplorer")
@@ -20,7 +21,6 @@ app_server <- function(input, output, session) {
     affi   <- all$affi  
     # Ambiguous ASVs and their affiliation
     ambiguous_otu <- unique(affi$OTU) ## this probably needs to be reactive
-    ambiguous_otu_affi <- phyloseq::tax_table(physeq)[ambiguous_otu, ] %>% as("matrix")
     # Add ASV Select Input
     insertUI(
       selector = "#tmp",
