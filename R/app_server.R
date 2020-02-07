@@ -30,21 +30,45 @@ app_server <- function(input, output, session) {
                        choices = ambiguous_otu,
                        multiple = FALSE)
     )
-    
+
+    old_affiliations <- phyloseq::tax_table(physeq)[ambiguous_otu, ] %>% as("matrix")
+    ## Store cleaned affiliations as reactive values    
+    affiliations <- reactiveValues(
+      cleaned = old_affiliations
+    )
+
     observeEvent(input$asv, {
-      
       # Extract Affiliation for a given OTU
       data <- extract_affiliation(affi, input$asv)
       amb <- find_level(data)
       output$txt <- renderUI({paste(input$asv, "- ", nrow(data) ," affiliation, ambiguity at rank ", amb)})
       output$table <- DT::renderDT({data}, selection = 'single')
       
-      # If a column is selected, update affiliation
+      ## Show considered replacement if one is selected
       output$selection <- renderUI({
         s = input$table_rows_selected
         if (length(s)) {
-          paste("These rows were selected: ", s)
+          paste(
+            "Current affiliation:",
+            paste(old_affiliations[input$asv, ], collapse = ';'), 
+            "to be replaced with:", 
+            paste(data[s, ], collapse = ';'), 
+            sep = "\n") 
         }
+      })
+      
+      ## Replace affiliation upon confirmation
+      observeEvent(input$clean, {
+        s = input$table_rows_selected
+        if (length(s)) {
+          ## Update affiliations
+          affiliations$cleaned[input$asv, ] <- unlist(data[s, ])
+          ## Update text (buggy, does not disappear when changing asv)
+          # output$selection <- renderUI({
+          #   glue::glue("Updated affiliation of {input$asv} to\n", 
+          #              "{paste(affiliations$cleaned[input$asv, ], collapse = ';')}")
+          # })
+        }        
       })
     })
     
@@ -53,18 +77,20 @@ app_server <- function(input, output, session) {
     ## phyloseq::tax_table(physeq)[input$asv, ] <- cleaned_taxonomy
     ## ambiguous_otu <- setdiff(ambiguous_otu, input$asv)
     ## updateUI 
-    
+
     output$download <- downloadHandler(
       filename = function() {
         paste0('cleaned_biom-', Sys.Date(), '.biom')
       },
       content = function(con) {
+        ## Update taxonomy of object phyloseq
+        phyloseq::tax_table(physeq)[rownames(affiliations$cleaned), ] <- affiliations$cleaned
+        ## TODO revert short OTU names back to original names
         phyloseq.extended::write_phyloseq(
           physeq = physeq, 
           biom_file = con, 
           biom_format = "frogs"
         )
-        ## write.csv(data, con)
       })
   })
 }
