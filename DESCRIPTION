@@ -22,7 +22,7 @@ Imports:
     htmltools,
     phyloseq,
     dplyr,
-    phyloseq.extended (>= 0.1.0.9000),
+    phyloseq.extended (>= 0.1.1.0),
     biomformat,
     tidyr,
     magrittr,
