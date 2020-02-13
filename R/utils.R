@@ -26,7 +26,7 @@ create_otu_dictionary <- function(physeq) {
     abundance = phyloseq::taxa_sums(physeq)
   ) %>% 
     dplyr::arrange(desc(abundance))
-  ## If all taxa names are long, sequences are likely to have been processed by DADA
+  ## If all taxa names are long, sequences are likely to have been processed by DADA2
   ## Move OTU names to sequence column and rename OTU with shorter names
   if (long_taxa_names(otu_dictionary$sequence)) {
    otu_dictionary <- otu_dictionary %>% 
