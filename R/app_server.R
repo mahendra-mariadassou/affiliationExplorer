@@ -20,7 +20,12 @@ app_server <- function(input, output, session) {
     dict   <- all$otu_dictionary
     affi   <- all$affi  
     # Ambiguous ASVs and their affiliation
-    ambiguous_otu <- unique(affi$OTU) ## this probably needs to be reactive
+    ambiguous_otu <- unique(affi$OTU)
+    ## Store cleaned otu as reactive values
+    otu <- reactiveValues(
+      cleaned = ambiguous_otu
+    )
+    
     # Add ASV Select Input
     insertUI(
       selector = "#tmp",
@@ -52,22 +57,26 @@ app_server <- function(input, output, session) {
             "Current affiliation:",
             paste(old_affiliations[input$asv, ], collapse = ';'), 
             "to be replaced with:", 
-            paste(data[s, ], collapse = ';'), 
+            paste(data[s, ], collapse = ';'),
             sep = "\n") 
         }
       })
       
       ## Replace affiliation upon confirmation
       observeEvent(input$clean, {
+        
         s = input$table_rows_selected
         if (length(s)) {
           ## Update affiliations
           affiliations$cleaned[input$asv, ] <- unlist(data[s, ])
-          ## Update text (buggy, does not disappear when changing asv)
-          # output$selection <- renderUI({
-          #   glue::glue("Updated affiliation of {input$asv} to\n", 
-          #              "{paste(affiliations$cleaned[input$asv, ], collapse = ';')}")
-          # })
+          # Update otu
+          otu$cleaned <- setdiff(otu$cleaned, input$asv)
+          
+          updateSelectInput(session, "asv",
+                            label =  "Select ASV",
+                            choices = otu$cleaned,
+                            selected = tail(otu$cleaned, 1)
+          )
         }        
       })
     })
