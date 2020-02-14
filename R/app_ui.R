@@ -1,6 +1,7 @@
 #' @import shiny
 #' @import shinycssloaders
 #' @import shinydashboard
+#' @import shinyjs
 app_ui <- function() {
   tagList(
     # Leave this function for adding external resources
@@ -26,11 +27,13 @@ app_ui <- function() {
       # DashBooard Body
       dashboardBody(
         fluidPage(
+          useShinyjs(),
           fluidRow(
             box(title = "Affiliation selection",
                 width = NULL,
                 status = "primary",
                 solidHeader = T,
+                htmlOutput("tmptxt"),
                 htmlOutput("txt"),
                 HTML("<br/>"),
                 DT::DTOutput("table"),

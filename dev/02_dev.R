@@ -21,6 +21,7 @@ usethis::use_package( "phyloseq" ) # To call each time you need a new package
 usethis::use_package( "biomformat" )
 usethis::use_package( "dplyr" )
 usethis::use_package( "tidyr" )
+usethis::use_package("shinyjs")
 
 ## Github dependencies
 usethis::use_dev_package("phyloseq.extended")

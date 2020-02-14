@@ -2,6 +2,7 @@
 #' @importFrom DT renderDT
 #' @importFrom phyloseq tax_table
 #' @importFrom phyloseq.extended write_phyloseq
+#' @import shinyjs
 app_server <- function(input, output, session) {
   # Load package data in the session (for testing purpose)
   # data("physeq", package = "affiliationExplorer")
@@ -9,7 +10,17 @@ app_server <- function(input, output, session) {
   # data("otu_dictionary", package = "affiliationExplorer")
   # List the first level callModules here
   
+  shinyjs::hide("clean")
+  shinyjs::hide("download")
+  output$tmptxt <- renderUI("Please upload your data (Biom file and MultiHits TSV file).")
+  
   observeEvent(input$tsv, {
+    
+    shinyjs::show("clean")
+    shinyjs::show("download")
+    
+    output$tmptxt <- renderUI("")
+    
     # Read the biom file --> phyloseq
     biomfile <- read_frogs_biom(input$biom$datapath)
     # Read the tsv file --> readr
