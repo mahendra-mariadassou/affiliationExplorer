@@ -34,7 +34,8 @@ app_server <- function(input, output, session) {
     ambiguous_otu <- unique(affi$OTU)
     ## Store cleaned otu as reactive values
     otu <- reactiveValues(
-      cleaned = ambiguous_otu
+      cleaned = ambiguous_otu, 
+      current_aff = NULL
     )
     
     # Add ASV Select Input
@@ -55,11 +56,12 @@ app_server <- function(input, output, session) {
 
     observeEvent(input$asv, {
       # Extract Affiliation for a given OTU
-      data <- extract_affiliation(affi, input$asv)
-      amb <- find_level(data)
+      otu$current_aff <- extract_affiliation(affi, input$asv)
+      amb <- find_level(otu$current_aff)
       output$txt <- renderUI({paste(input$asv, "- ", nrow(data) ," affiliation, ambiguity at rank ", amb)})
-      output$table <- DT::renderDT({data}, selection = 'single')
-      
+      output$table <- DT::renderDT({otu$current_aff}, 
+                                   selection = list(mode = 'single', selected = NULL, target = 'row'), 
+                                   editable = TRUE)
       ## Show considered replacement if one is selected
       output$selection <- renderUI({
         s = input$table_rows_selected
@@ -68,28 +70,40 @@ app_server <- function(input, output, session) {
             "Current affiliation:",
             paste(old_affiliations[input$asv, ], collapse = ';'), 
             "to be replaced with:", 
-            paste(data[s, ], collapse = ';'),
+            paste(otu$current_aff[s, ], collapse = ';'),
             sep = "\n") 
         }
       })
       
-      ## Replace affiliation upon confirmation
-      observeEvent(input$clean, {
-        
-        s = input$table_rows_selected
-        if (length(s)) {
-          ## Update affiliations
-          affiliations$cleaned[input$asv, ] <- unlist(data[s, ])
-          # Update otu
-          otu$cleaned <- setdiff(otu$cleaned, input$asv)
-          
-          updateSelectInput(session, "asv",
-                            label =  "Select ASV",
-                            choices = otu$cleaned,
-                            selected = tail(otu$cleaned, 1)
-          )
-        }        
-      })
+    })
+    
+    ## Allow manual corrections
+    observeEvent(input$table_cell_edit, {
+      info = input$table_cell_edit
+      str(info)
+      i = info$row
+      j = info$col
+      v = info$value
+      otu$current_aff <<- editData(otu$current_aff, input$table_cell_edit, "table")
+    })
+    
+    ## Replace affiliation upon confirmation
+    observeEvent(input$clean, {
+      s = input$table_rows_selected
+      if (length(s)) {
+        # cat(paste("Cleaning ASV", input$asv))
+        # browser()
+        ## Update affiliations
+        ## data <- extract_affiliation(affi, input$asv)
+        affiliations$cleaned[input$asv, ] <- unlist(otu$current_aff[s, ])
+        # Update otu
+        otu$cleaned <- setdiff(otu$cleaned, input$asv)
+        updateSelectInput(session, "asv",
+                          label =  "Select ASV",
+                          choices = otu$cleaned,
+                          selected = otu$cleaned[1]
+        )
+      }        
     })
     
     ## Reactive block to update ambiguous_otu, ambiguous_otu_affi and the list when clicking on the "Clean ASV" button
