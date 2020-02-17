@@ -2,7 +2,7 @@
 #' @importFrom DT renderDT
 #' @importFrom phyloseq tax_table
 #' @importFrom phyloseq.extended write_phyloseq
-#' @import shinyjs
+#' @importFrom shinyjs hide
 app_server <- function(input, output, session) {
   # Load package data in the session (for testing purpose)
   # data("physeq", package = "affiliationExplorer")
