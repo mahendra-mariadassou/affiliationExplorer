@@ -14,6 +14,7 @@ biocViews:
 RoxygenNote: 7.0.2
 Imports: 
     shiny,
+    shinyjs,
     golem,
     processx,
     attempt,
