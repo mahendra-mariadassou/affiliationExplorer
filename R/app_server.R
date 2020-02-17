@@ -79,11 +79,11 @@ app_server <- function(input, output, session) {
     
     ## Allow manual corrections
     observeEvent(input$table_cell_edit, {
-      info = input$table_cell_edit
-      str(info)
-      i = info$row
-      j = info$col
-      v = info$value
+      # info = input$table_cell_edit
+      # str(info)
+      # i = info$row
+      # j = info$col
+      # v = info$value
       otu$current_aff <<- editData(otu$current_aff, input$table_cell_edit, "table")
     })
     
