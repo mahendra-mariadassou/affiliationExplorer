@@ -42,7 +42,7 @@ app_ui <- function() {
                 #HTML("<br/>"),
                 htmlOutput("selection"),
                 HTML("<br/>"),
-                actionButton("clean", "Clean ASV"),
+                actionButton("clean", "Update ASV"),
                 actionButton("skip", "Skip ASV"),
                 downloadButton("download", "Download")
             )

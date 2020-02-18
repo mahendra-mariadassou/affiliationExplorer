@@ -54,10 +54,10 @@ app_server <- function(input, output, session) {
       # Extract Affiliation for a given OTU
       data$affi <- extract_affiliation(affi, input$asv) %>% dplyr::distinct()
       amb <- find_level(data$affi)
-      output$txt <- renderUI(HTML({paste("<p><b>", input$asv, "- ", nrow(data$affi) ,"conflicting affiliation, ambiguity at rank ", amb, "</b></p>")}))
+      output$txt <- renderUI(HTML({paste("<p><b>", input$asv, "- ", nrow(data$affi) ,"conflicting affiliations, ambiguity at rank ", amb, "</b></p>")}))
       
-      output$help <- renderUI(HTML({paste("<cite>Select an affiliation by clicking on a row.<br/>",
-                                          "It is possible to change the affiliation by double clicking on a cell in the table.</cite>")}))
+      output$help <- renderUI(HTML({paste("<cite>Select new affiliation by clicking on a row (double click on a cell to edit its content).<br/>",
+                                          "Click \"Update ASV\" to update affiliation (with selected row) or \"Skip ASV\" to move to the next one</cite>")}))
       
       output$table <- DT::renderDT({data$affi}, 
                                    selection = list(mode = 'single', selected = NULL, target = 'row'), 
