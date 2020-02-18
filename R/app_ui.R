@@ -37,7 +37,7 @@ app_ui <- function() {
                 htmlOutput("txt"),
                 HTML("<br/>"),
                 DT::DTOutput("table"),
-                HTML("<br/>"),
+                #HTML("<br/>"),
                 htmlOutput("selection"),
                 HTML("<br/>"),
                 actionButton("clean", "Clean ASV"),

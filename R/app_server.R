@@ -14,7 +14,7 @@ app_server <- function(input, output, session) {
   shinyjs::hide("clean")
   shinyjs::hide("skip")
   shinyjs::hide("download")
-  output$tmptxt <- renderUI("Please upload your data (Biom file and MultiHits TSV file).")
+  output$tmptxt <- renderUI(HTML("<p>Please upload your data (Biom file and MultiHits TSV file).</p>"))
   
   observeEvent(input$tsv, {
     
@@ -54,7 +54,7 @@ app_server <- function(input, output, session) {
       # Extract Affiliation for a given OTU
       data$affi <- extract_affiliation(affi, input$asv) %>% dplyr::distinct()
       amb <- find_level(data$affi)
-      output$txt <- renderUI({paste(input$asv, "- ", nrow(data$affi) ,"conflicting affiliation, ambiguity at rank ", amb)})
+      output$txt <- renderUI(HTML({paste("<p><b>", input$asv, "- ", nrow(data$affi) ,"conflicting affiliation, ambiguity at rank ", amb, "</b></p>")}))
       output$table <- DT::renderDT({data$affi}, 
                                    selection = list(mode = 'single', selected = NULL, target = 'row'), 
                                    editable = TRUE)
@@ -62,12 +62,12 @@ app_server <- function(input, output, session) {
       output$selection <- renderUI({
         s = input$table_rows_selected
         if (length(s)) {
-          paste(
-            "Current affiliation:",
-            paste(data$cleaned[input$asv, ], collapse = ';'), 
-            "to be replaced with:", 
-            paste(data$affi[s, ], collapse = ';'),
-            sep = "\n") 
+          
+          HTML(paste("<b>Current affiliation:</b><br/>&nbsp;&nbsp;&nbsp;"),
+               paste(data$cleaned[input$asv, ], collapse = ' / '),
+               "<br/><b>to be replaced with:</b><br/>&nbsp;&nbsp;&nbsp;",
+               paste(data$affi[s, ], collapse = ' / ')
+          )
         }
       })
     })
