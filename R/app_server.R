@@ -96,7 +96,7 @@ app_server <- function(input, output, session) {
       },
       content = function(con) {
         ## Update taxonomy of object phyloseq
-        phyloseq::tax_table(physeq)[rownames(affiliations$cleaned), ] <- affiliations$cleaned
+        phyloseq::tax_table(physeq)[rownames(data$cleaned), ] <- data$cleaned
         ## revert short OTU names back to original names
         dict <- setNames(object = otu_dictionary$sequence, 
                          nm     = otu_dictionary$OTU)
