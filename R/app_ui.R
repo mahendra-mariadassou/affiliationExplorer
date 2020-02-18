@@ -35,6 +35,8 @@ app_ui <- function() {
                 solidHeader = T,
                 htmlOutput("tmptxt"),
                 htmlOutput("txt"),
+                #HTML("<br/>"),
+                htmlOutput("help"),
                 HTML("<br/>"),
                 DT::DTOutput("table"),
                 #HTML("<br/>"),

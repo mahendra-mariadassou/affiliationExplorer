@@ -55,6 +55,10 @@ app_server <- function(input, output, session) {
       data$affi <- extract_affiliation(affi, input$asv) %>% dplyr::distinct()
       amb <- find_level(data$affi)
       output$txt <- renderUI(HTML({paste("<p><b>", input$asv, "- ", nrow(data$affi) ,"conflicting affiliation, ambiguity at rank ", amb, "</b></p>")}))
+      
+      output$help <- renderUI(HTML({paste("<cite>Select an affiliation by clicking on a row.<br/>",
+                                          "It is possible to change the affiliation by double clicking on a cell in the table.</cite>")}))
+      
       output$table <- DT::renderDT({data$affi}, 
                                    selection = list(mode = 'single', selected = NULL, target = 'row'), 
                                    editable = TRUE)
@@ -95,9 +99,7 @@ app_server <- function(input, output, session) {
     
     ## Skip ASV
     observeEvent(input$skip, {
-      
       data$amb_otus <- setdiff(data$amb_otus, input$asv)
-      
       updateSelectInput(session, "asv",
                         label =  "Select ASV",
                         choices = data$amb_otus,
@@ -112,7 +114,7 @@ app_server <- function(input, output, session) {
       },
       content = function(con) {
         ## Update taxonomy of object phyloseq
-        phyloseq::tax_table(physeq)[rownames(affiliations$cleaned), ] <- affiliations$cleaned
+        phyloseq::tax_table(physeq)[rownames(data$cleaned), ] <- data$cleaned
         ## revert short OTU names back to original names
         dict <- setNames(object = otu_dictionary$sequence, 
                          nm     = otu_dictionary$OTU)
