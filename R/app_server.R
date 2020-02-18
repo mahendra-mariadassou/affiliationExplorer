@@ -12,12 +12,14 @@ app_server <- function(input, output, session) {
   # List the first level callModules here
   
   shinyjs::hide("clean")
+  shinyjs::hide("skip")
   shinyjs::hide("download")
   output$tmptxt <- renderUI("Please upload your data (Biom file and MultiHits TSV file).")
   
   observeEvent(input$tsv, {
     
     shinyjs::show("clean")
+    shinyjs::show("skip")
     shinyjs::show("download")
     
     output$tmptxt <- renderUI("")
@@ -88,7 +90,21 @@ app_server <- function(input, output, session) {
                           selected = data$amb_otus[1]
         )
       }        
-    })
+    }
+    )
+    
+    ## Skip ASV
+    observeEvent(input$skip, {
+      
+      data$amb_otus <- setdiff(data$amb_otus, input$asv)
+      
+      updateSelectInput(session, "asv",
+                        label =  "Select ASV",
+                        choices = data$amb_otus,
+                        selected = data$amb_otus[1]
+      )
+    }
+    )
     
     output$download <- downloadHandler(
       filename = function() {
