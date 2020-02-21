@@ -4,6 +4,7 @@
 #' @importFrom phyloseq.extended write_phyloseq
 #' @importFrom shinyjs hide show
 #' @importFrom dplyr distinct
+#' @importFrom tidyverse stringr
 app_server <- function(input, output, session) {
   # Load package data in the session (for testing purpose)
   # data("physeq", package = "affiliationExplorer")
@@ -37,7 +38,8 @@ app_server <- function(input, output, session) {
     data <- reactiveValues(
       amb_otus = unique(affi$OTU),                                                 ## Ambiguous otus
       cleaned  = phyloseq::tax_table(physeq)[unique(affi$OTU), ] %>% as("matrix"), ## Their current affiliation
-      affi     = NULL                                                              ## Placeholder for conflicting affiliations of current ASV
+      affi     = NULL,                                                             ## Placeholder for conflicting affiliations of current ASV
+      sequence = NULL                                                              ## Placeholder for current OTU sequence
     )
     
     # Add ASV Select Input
@@ -49,19 +51,31 @@ app_server <- function(input, output, session) {
                        choices = data$amb_otus,
                        multiple = FALSE)
     )
+    
+    # Add Sequence Checkbox
+    insertUI(
+      select = "#tmp",
+      where = "beforeEnd",
+      ui = checkboxInput("seq",
+                         label = "Sequence display",
+                         value = FALSE
+                         )
+    )
 
     observeEvent(input$asv, {
       # Extract Affiliation for a given OTU
-      data$affi <- extract_affiliation(affi, input$asv) %>% dplyr::distinct()
+      data$affi <- extract_affiliation(affi, input$asv)
+      data$sequence <- extract_sequence(affi, input$asv)
       amb <- find_level(data$affi)
       output$txt <- renderUI(HTML({paste("<p><b>", input$asv, "- ", nrow(data$affi) ,"conflicting affiliations, ambiguity at rank ", amb, "</b></p>")}))
       
       output$help <- renderUI(HTML({paste("<cite>Select new affiliation by clicking on a row (double click on a cell to edit its content).<br/>",
-                                          "Click \"Update ASV\" to update affiliation (with selected row) or \"Skip ASV\" to move to the next one</cite>")}))
+                                          "Click \"Update ASV\" to update affiliation (with selected row) or \"Skip ASV\" to move to the next one.</cite>")}))
       
       output$table <- DT::renderDT({data$affi}, 
                                    selection = list(mode = 'single', selected = NULL, target = 'row'), 
                                    editable = TRUE)
+        
       ## Show considered replacement if one is selected
       output$selection <- renderUI({
         s = input$table_rows_selected
@@ -74,6 +88,15 @@ app_server <- function(input, output, session) {
           )
         }
       })
+    })
+    
+    observeEvent(input$seq, {
+      if (input$seq) {
+        output$sequence <- renderUI(HTML({paste("<b>Sequence:</b><br/>", paste(unlist(strsplit(gsub("(.{80})", "\\1 ", data$sequence), " ")), collapse = "<br/>"), "<br/><br/>")}))
+      }
+      else {
+        output$sequence <- renderUI(HTML(""))
+      }
     })
     
     ## Allow manual corrections

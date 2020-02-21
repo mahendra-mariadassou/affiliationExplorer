@@ -40,6 +40,7 @@ app_ui <- function() {
                 HTML("<br/>"),
                 DT::DTOutput("table"),
                 #HTML("<br/>"),
+                htmlOutput("sequence"),
                 htmlOutput("selection"),
                 HTML("<br/>"),
                 actionButton("clean", "Update ASV"),

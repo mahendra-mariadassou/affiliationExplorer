@@ -70,7 +70,16 @@ sort_ambiguous_otu <- function(physeq, affi) {
 extract_affiliation <- function(affi, otu) {
   affi %>% 
     dplyr::filter(OTU == otu) %>% 
-    dplyr::select(Kingdom:Species)
+    dplyr::select(Kingdom:Species) %>% 
+    dplyr::distinct()
+}
+
+## Extract all affiliation for a given OTU
+extract_sequence <- function(affi, otu) {
+  affi %>% 
+    dplyr::filter(OTU == otu) %>% 
+    dplyr::pull(sequence) %>% 
+    head(1)
 }
 
 ## Find level of ambiguity
