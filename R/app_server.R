@@ -54,8 +54,8 @@ app_server <- function(input, output, session) {
     
     # Add Sequence Checkbox
     insertUI(
-      select = "#tmp",
-      where = "beforeEnd",
+      select = "#table",
+      where = "afterEnd",
       ui = checkboxInput("seq",
                          label = "Sequence display",
                          value = FALSE
