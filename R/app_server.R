@@ -36,11 +36,13 @@ app_server <- function(input, output, session) {
     affi   <- all$affi  
     # Store ambiguous ASVs and their affiliation in reactive environment
     data <- reactiveValues(
-      amb_otus = unique(affi$OTU),                                                 ## Ambiguous otus
-      cleaned  = phyloseq::tax_table(physeq)[unique(affi$OTU), ] %>% as("matrix"), ## Their current affiliation
-      affi     = NULL,                                                             ## Placeholder for conflicting affiliations of current ASV
-      sequence = NULL                                                              ## Placeholder for current OTU sequence
+      amb_otus     = unique(affi$OTU),                             ## Ambiguous otus
+      cleaned      = phyloseq::tax_table(physeq) %>% as("matrix"), ## All current affiliations (not only those of ambiguous OTUs)
+      affi         = NULL,                                         ## Placeholder for conflicting affiliations of current OTU
+      sequence     = NULL                                          ## Placeholder for current OTU sequence
     )
+    ## Sort `cleaned` by decreasing taxa abundances
+    data$cleaned <- data$cleaned[phyloseq::taxa_sums(physeq) %>% sort(decreasing = TRUE) %>% names(), ]
     
     # Add ASV Select Input
     insertUI(
@@ -131,13 +133,14 @@ app_server <- function(input, output, session) {
     }
     )
     
+    ## Download biomfile
     output$download <- downloadHandler(
       filename = function() {
         paste0('cleaned_biom-', Sys.Date(), '.biom')
       },
       content = function(con) {
         ## Update taxonomy of object phyloseq
-        phyloseq::tax_table(physeq)[rownames(data$cleaned), ] <- data$cleaned
+        phyloseq::tax_table(physeq)[ , ] <- data$cleaned[phyloseq::taxa_names(physeq), ]
         ## revert short OTU names back to original names
         dict <- setNames(object = dict$sequence, 
                          nm     = dict$OTU)
@@ -149,5 +152,17 @@ app_server <- function(input, output, session) {
           biom_format = "frogs"
         )
       })
+    
+    ### Page 2 UI elements -----------------------------------------------
+    output$tableFull <- DT::renderDT({data$cleaned}, 
+                                     filter = "top",
+                                     selection = list(mode = 'single', selected = NULL, target = 'row'), 
+                                     editable = TRUE)
+    
+    ## Manual corrections in non ambiguous taxa
+    observeEvent(input$tableFull_cell_edit, {
+      data$cleaned[,] <<- DT::editData(data$cleaned, input$tableFull_cell_edit, "tableFull")
+    })
+    
   })
 }
