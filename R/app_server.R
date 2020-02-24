@@ -1,10 +1,9 @@
 #' @import shiny
 #' @importFrom DT renderDT editData
-#' @importFrom phyloseq tax_table
+#' @importFrom phyloseq tax_table taxa_names taxa_sums
 #' @importFrom phyloseq.extended write_phyloseq
 #' @importFrom shinyjs hide show
 #' @importFrom dplyr distinct
-#' @importFrom tidyverse stringr
 app_server <- function(input, output, session) {
   # Load package data in the session (for testing purpose)
   # data("physeq", package = "affiliationExplorer")
@@ -59,11 +58,13 @@ app_server <- function(input, output, session) {
       select = "#table",
       where = "afterEnd",
       ui = checkboxInput("seq",
-                         label = "Sequence display",
+                         label = "Show sequence",
                          value = FALSE
                          )
     )
 
+    ### Page 1 UI elements -----------------------------------------------
+    
     observeEvent(input$asv, {
       # Extract Affiliation for a given OTU
       data$affi <- extract_affiliation(affi, input$asv)
@@ -103,7 +104,7 @@ app_server <- function(input, output, session) {
     
     ## Allow manual corrections
     observeEvent(input$table_cell_edit, {
-      data$affi <<- DT::editData(data$affi, input$table_cell_edit, "table")
+      data$affi[,] <<- DT::editData(data$affi, input$table_cell_edit, "table")
     })
     
     ## Replace affiliation upon confirmation
@@ -118,6 +119,10 @@ app_server <- function(input, output, session) {
                           choices = data$amb_otus,
                           selected = data$amb_otus[1]
         )
+      } else {
+        output$selection <- renderUI({
+          HTML(paste("Choose an affiliation before clicking on the \"Update ASV\" button"))
+        })
       }        
     }
     )
