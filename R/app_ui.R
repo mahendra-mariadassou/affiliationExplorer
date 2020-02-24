@@ -29,7 +29,7 @@ app_ui <- function() {
         fluidPage(
           useShinyjs(),
           fluidRow(
-            box(title = "Affiliation selection",
+            box(title = "Affiliation selection: select among conflicting affiliiations",
                 width = NULL,
                 status = "primary",
                 solidHeader = T,
@@ -47,6 +47,16 @@ app_ui <- function() {
                 actionButton("skip", "Skip ASV"),
                 downloadButton("download", "Download")
             )
+          )
+        ), 
+        fluidPage(
+          fluidRow(
+           box(title = "Affiliation edition: correct current affiliations",
+               width = NULL, 
+               status = "primary", 
+               solidHeader = TRUE, 
+               DT::DTOutput("tableFull")
+               ) 
           )
         )
       )
