@@ -11,7 +11,7 @@ read_multihits <- function(multihits_file) {
 ## Functions to create short taxa names -------------------------------------
 long_taxa_names <- function(taxa_names, max_size = 32) {
   ## any taxa name longer than 32 characters
-  any(taxa_names >= max_size)
+  any(nchar(taxa_names) >= max_size)
 }
 
 ambiguous_taxa <- function(physeq) {
