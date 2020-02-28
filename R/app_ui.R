@@ -14,49 +14,60 @@ app_ui <- function() {
       ),
       # DashBooard Sidebar
       dashboardSidebar(
-        fileInput("biom",
-                  "Upload Biom File",
-                  accept = c("text/plain", ".biom")
-                 ),
-        fileInput("tsv",
-                  "Upload MultiHits TSV File",
-                  accept = c("text/tab-separated-values", ".tsv", "text/csv")
-                 ),
-        textOutput("tmp")
+        fluidPage(
+          fileInput("biom",
+                    "Upload Biom File",
+                    accept = c("text/plain", ".biom")
+                   ),
+          fileInput("tsv",
+                    "Upload MultiHits TSV File",
+                    accept = c("text/tab-separated-values", ".tsv", "text/csv")
+                   ),
+          HTML("<br/>"),
+          downloadButton("download", "Download", class="butt"),
+          tags$head(tags$style(".butt{color: black !important; margin-left: 16px; }"))
+        )
       ),
       # DashBooard Body
       dashboardBody(
-        fluidPage(
-          useShinyjs(),
-          fluidRow(
-            box(title = "Affiliation selection: select among conflicting affiliiations",
-                width = NULL,
-                status = "primary",
+        tags$style(HTML("
+          .tabbable > .nav > li > a               { background-color: #3c8dbc; color:white; font-size: 17px; }
+          .tabbable > .nav > li[class=active] > a { background-color: white; color:#3c8dbc; font-size: 17px; }
+          ")),
+        tabsetPanel(
+          tabPanel("Affiliation selection",
+            useShinyjs(),
+            fluidRow(
+              box(
+                width = 12,
                 solidHeader = T,
                 htmlOutput("tmptxt"),
+                div(style="display: inline-block; width: 100px;",
+                    selectInput("asv", label = "Select ASV", choices = c(), multiple = FALSE)),
+                div(style="display: inline-block; margin-left: 75%;",
+                    actionButton("clean", "Update ASV", class="butt2")),
+                div(style="display: inline-block;",
+                    actionButton("skip", "Skip ASV", class="butt3")),
+                tags$head(tags$style(".butt2{margin-bottom: 28px; align: right;}")),
+                tags$head(tags$style(".butt3{margin-bottom: 28px; align: right;}")),
                 htmlOutput("txt"),
-                #HTML("<br/>"),
                 htmlOutput("help"),
                 HTML("<br/>"),
                 DT::DTOutput("table"),
-                #HTML("<br/>"),
                 htmlOutput("sequence"),
-                htmlOutput("selection"),
-                HTML("<br/>"),
-                actionButton("clean", "Update ASV"),
-                actionButton("skip", "Skip ASV"),
-                downloadButton("download", "Download")
+                htmlOutput("selection")
+              )
             )
-          )
-        ), 
-        fluidPage(
-          fluidRow(
-           box(title = "Affiliation edition: correct current affiliations",
-               width = NULL, 
-               status = "primary", 
-               solidHeader = TRUE, 
-               DT::DTOutput("tableFull")
-               ) 
+          ),
+          tabPanel("Affiliation edition", 
+            fluidRow(
+              box(
+                width = 12,
+                solidHeader = T,
+                htmlOutput("tmptxt2"),
+                DT::DTOutput("tableFull")
+              )
+            )
           )
         )
       )

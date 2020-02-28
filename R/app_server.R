@@ -11,10 +11,13 @@ app_server <- function(input, output, session) {
   # data("otu_dictionary", package = "affiliationExplorer")
   # List the first level callModules here
   
+  shinyjs::hide("asv")
   shinyjs::hide("clean")
   shinyjs::hide("skip")
   shinyjs::hide("download")
+  
   output$tmptxt <- renderUI(HTML("<p>Please upload your data (Biom file and MultiHits TSV file).</p>"))
+  output$tmptxt2 <- renderUI(HTML("<p>Please upload your data (Biom file and MultiHits TSV file).</p><br/><br/>"))
   
   observeEvent(input$tsv, {
     
@@ -23,6 +26,7 @@ app_server <- function(input, output, session) {
     shinyjs::show("download")
     
     output$tmptxt <- renderUI("")
+    output$tmptxt2 <- renderUI("")
     
     # Read the biom file --> phyloseq
     biomfile <- read_frogs_biom(input$biom$datapath)
@@ -43,15 +47,12 @@ app_server <- function(input, output, session) {
     ## Sort `cleaned` by decreasing taxa abundances
     data$cleaned <- data$cleaned[phyloseq::taxa_sums(physeq) %>% sort(decreasing = TRUE) %>% names(), ]
     
-    # Add ASV Select Input
-    insertUI(
-      selector = "#tmp",
-      where = "beforeEnd",
-      ui = selectInput("asv",
-                       label = "Select ASV",
-                       choices = data$amb_otus,
-                       multiple = FALSE)
+    updateSelectInput(session, "asv",
+                      label =  "Select ASV",
+                      choices = data$amb_otus
     )
+    
+    shinyjs::show("asv")
     
     # Add Sequence Checkbox
     insertUI(
