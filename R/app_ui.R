@@ -19,6 +19,10 @@ app_ui <- function() {
                     "Upload Biom File",
                     accept = c("text/plain", ".biom")
                    ),
+          fileInput("fasta",
+                    "Optional: upload Fasta File",
+                    accept = c("text/plain", ".fasta")
+          ),
           fileInput("tsv",
                     "Upload MultiHits TSV File",
                     accept = c("text/tab-separated-values", ".tsv", "text/csv")

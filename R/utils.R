@@ -8,6 +8,16 @@ read_multihits <- function(multihits_file) {
   readr::read_tsv(multihits_file)
 }
 
+## Template for reading fasta files into a tibble
+#' @importFrom Biostrings readDNAStringSet
+read_fasta <- function(fasta_file) {
+  if (is.null(fasta_file)) return(NULL)
+  Biostrings::readDNAStringSet(fasta_file) %>% 
+    as.character() %>% 
+    tibble::tibble(OTU      = names(.), 
+                   sequence = unname(.))
+}
+
 ## Functions to create short taxa names -------------------------------------
 long_taxa_names <- function(taxa_names, max_size = 32) {
   ## any taxa name longer than 32 characters
@@ -37,7 +47,7 @@ create_otu_dictionary <- function(physeq) {
   otu_dictionary
 }
 
-sanitize_physeq_and_affi <- function(physeq, affi) {
+sanitize_physeq_and_affi <- function(physeq, affi, fasta) {
   ## Create dictionary
   otu_dictionary <- create_otu_dictionary(physeq)
   old_to_new <- otu_dictionary %>% dplyr::select(-abundance) %>% tibble::deframe()
@@ -51,6 +61,16 @@ sanitize_physeq_and_affi <- function(physeq, affi) {
   
   ## Remove previously curated taxa from affi
   affi <- affi %>% dplyr::filter(OTU %in% ambiguous_taxa(physeq))
+  
+  ## Add sequences from fasta file to affiliation table
+  if (!is.null(fasta)) {
+    if (long_taxa_names(otu_dictionary$sequence)) { 
+      warning("Sequences already present in the multihits files.\nFasta file not used.")
+    } else {
+      affi <- affi %>% dplyr::select(-sequence) %>% dplyr::left_join(fasta, by = "OTU")
+    }
+  }
+  
   
   list(
     physeq         = physeq, 

@@ -30,10 +30,12 @@ app_server <- function(input, output, session) {
     
     # Read the biom file --> phyloseq
     biomfile <- read_frogs_biom(input$biom$datapath)
+    # Read the optional fasta file --> read_fasta
+    fasta <- read_fasta(input$fasta$datapath)
     # Read the tsv file --> readr
     multihits <- read_multihits(input$tsv$datapath)
     # Sanitize physeq, multi_hits and build dictionary for short OTU names
-    all <- sanitize_physeq_and_affi(biomfile, multihits)
+    all <- sanitize_physeq_and_affi(biomfile, multihits, fasta)
     physeq <- all$physeq
     dict   <- all$otu_dictionary
     affi   <- all$affi  
