@@ -16,12 +16,12 @@ usethis::use_pipe()
 
 usethis::use_package("shinydashboard")
 usethis::use_package("shinycssloaders")
-#usethis::use_package("ReporteRs")
 usethis::use_package( "phyloseq" ) # To call each time you need a new package
 usethis::use_package( "biomformat" )
 usethis::use_package( "dplyr" )
 usethis::use_package( "tidyr" )
 usethis::use_package("shinyjs")
+usethis::use_package("Biostrings")
 
 ## Github dependencies
 usethis::use_dev_package("phyloseq.extended")

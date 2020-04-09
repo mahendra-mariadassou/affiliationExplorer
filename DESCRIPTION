@@ -1,35 +1,44 @@
 Package: affiliationExplorer
 Title: Resolve multiaffilations from FROGS
 Version: 0.0.0.9000
-Authors@R: c(
-  person('Sandra', 'Derozier', email = 'sandra.derozier@inrae.fr', role = c('cre', 'aut')),
-  person("Mahendra", "Mariadassou", role = "aut", email = "mahendra.mariadassou@inrae.fr", 
-      comment = c(ORCID = "0000-0003-2986-354X"))
-  )
-Description: Shiny app to help user choose one affilation among equally good ones.
+Authors@R: 
+    c(person(given = "Sandra",
+             family = "Derozier",
+             role = c("cre", "aut"),
+             email = "sandra.derozier@inrae.fr"),
+      person(given = "Mahendra",
+             family = "Mariadassou",
+             role = "aut",
+             email = "mahendra.mariadassou@inrae.fr",
+             comment = c(ORCID = "0000-0003-2986-354X")))
+Description: Shiny app to help user choose one affilation among
+    equally good ones.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-biocViews:
-RoxygenNote: 7.0.2
 Imports: 
-    shiny,
-    shinyjs,
-    golem,
-    processx,
-    attempt,
+    Biostrings,
+    config,
+    dplyr,
     DT,
     glue,
+    golem,
     htmltools,
-    phyloseq,
-    dplyr,
-    phyloseq.extended (>= 0.1.1.0),
-    biomformat,
-    tidyr,
     magrittr,
+    phyloseq,
+    phyloseq.extended (>= 0.1.1.0),
+    readr,
+    shiny,
+    shinycssloaders,
     shinydashboard,
-    shinycssloaders
-Remotes: 
-    mahendra-mariadassou/phyloseq-extended@dev    
+    shinyjs,
+    tibble,
+    tidyr
 Suggests: 
+    pkgload,
+    processx,
     testthat
+Remotes: 
+    mahendra-mariadassou/phyloseq-extended@dev
+biocViews:
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
