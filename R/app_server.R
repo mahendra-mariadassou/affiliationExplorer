@@ -152,7 +152,7 @@ app_server <- function(input, output, session) {
         ## revert short OTU names back to original names
         dict <- setNames(object = dict$sequence, 
                          nm     = dict$OTU)
-        phyloseq::taxa_names(physeq) <- dict[phyloseq::taxa_names(physeq)]
+        phyloseq::taxa_names(physeq) <- dict[phyloseq::taxa_names(physeq)] %>% unname()
         ## Export 
         phyloseq.extended::write_phyloseq(
           physeq = physeq, 
