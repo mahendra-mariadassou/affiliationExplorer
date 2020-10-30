@@ -26,6 +26,9 @@ usethis::use_package("Biostrings")
 ## Github dependencies
 usethis::use_dev_package("phyloseq.extended")
 
+## Check dependencies
+attachment::att_to_description()
+
 ## 2.3 Add tests
 
 usethis::use_test( "app" )
