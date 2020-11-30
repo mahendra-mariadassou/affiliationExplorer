@@ -1,6 +1,6 @@
 # Set options here
 options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
-options(shiny.maxRequestSize = 100 * 1024^2)
+# options(shiny.maxRequestSize = 100 * 1024^2)
 options(spinner.color="#0275D8", spinner.color.background="#ffffff", spinner.size=2)
 
 # Detach all loaded packages and clean your environment
