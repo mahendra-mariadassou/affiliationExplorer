@@ -54,7 +54,7 @@ app_server <- function(input, output, session) {
     data$cleaned <- data$cleaned[phyloseq::taxa_sums(physeq) %>% sort(decreasing = TRUE) %>% names(), ]
     
     updateSelectInput(session, "asv",
-                      label =  "Select ASV",
+                      label =  "Select OTU",
                       choices = data$amb_otus
     )
     
@@ -80,7 +80,7 @@ app_server <- function(input, output, session) {
       output$txt <- renderUI(HTML({paste("<p><b>", input$asv, "- ", nrow(data$affi) ,"conflicting affiliations, ambiguity at rank ", amb, "</b></p>")}))
       
       output$help <- renderUI(HTML({paste("<cite>Select new affiliation by clicking on a row (double click on a cell to edit its content).<br/>",
-                                          "Click \"Update ASV\" to update affiliation (with selected row) or \"Skip ASV\" to move to the next one.</cite>")}))
+                                          "Click \"Update OTU\" to update affiliation (with selected row) or \"Skip OTU\" to move to the next one.</cite>")}))
       
       output$table <- DT::renderDT({data$affi}, 
                                    selection = list(mode = 'single', selected = NULL, target = 'row'), 
@@ -122,13 +122,13 @@ app_server <- function(input, output, session) {
         data$cleaned[input$asv, ] <- unlist(data$affi[s, ])
         data$amb_otus <- setdiff(data$amb_otus, input$asv)
         updateSelectInput(session, "asv",
-                          label =  "Select ASV",
+                          label =  "Select OTU",
                           choices = data$amb_otus,
                           selected = data$amb_otus[1]
         )
       } else {
         output$selection <- renderUI({
-          HTML(paste("Choose an affiliation before clicking on the \"Update ASV\" button"))
+          HTML(paste("Choose an affiliation before clicking on the \"Update OTU\" button"))
         })
       }        
     }
@@ -138,7 +138,7 @@ app_server <- function(input, output, session) {
     observeEvent(input$skip, {
       data$amb_otus <- setdiff(data$amb_otus, input$asv)
       updateSelectInput(session, "asv",
-                        label =  "Select ASV",
+                        label =  "Select OTU",
                         choices = data$amb_otus,
                         selected = data$amb_otus[1]
       )
