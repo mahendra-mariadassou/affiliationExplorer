@@ -83,6 +83,7 @@ app_server <- function(input, output, session) {
                                           "Click \"Update OTU\" to update affiliation (with selected row) or \"Skip OTU\" to move to the next one.</cite>")}))
       
       output$table <- DT::renderDT({data$affi}, 
+                                   options = list(scrollX = TRUE),
                                    selection = list(mode = 'single', selected = NULL, target = 'row'), 
                                    editable = TRUE)
         
@@ -102,7 +103,12 @@ app_server <- function(input, output, session) {
     
     observeEvent(input$seq, {
       if (input$seq) {
-        output$sequence <- renderUI(HTML({paste("<b>Sequence:</b><br/>", paste(unlist(strsplit(gsub("(.{80})", "\\1 ", data$sequence), " ")), collapse = "<br/>"), "<br/><br/>")}))
+        output$sequence <- renderUI(
+          HTML({paste(
+            "<b>Sequence:</b><br/>", 
+            paste(unlist(strsplit(gsub("(.{80})", "\\1 ", data$sequence), " ")), collapse = "<br/>"), 
+            "<br/><br/>"
+          )}))
       }
       else {
         output$sequence <- renderUI(HTML(""))
@@ -168,6 +174,7 @@ app_server <- function(input, output, session) {
     ### Page 2 UI elements -----------------------------------------------
     output$tableFull <- DT::renderDT({data$cleaned}, 
                                      filter = "top",
+                                     option = list(scrollX = TRUE),
                                      selection = list(mode = 'single', selected = NULL, target = 'row'), 
                                      editable = TRUE)
     
