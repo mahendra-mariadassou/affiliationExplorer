@@ -17,15 +17,15 @@ app_ui <- function() {
         fluidPage(
           fileInput("biom",
                     "Upload Biom File",
-                    accept = c("text/plain", ".biom")
+                    accept = c(".biom", ".biom1")
                    ),
           fileInput("fasta",
                     "Optional: upload Fasta File",
-                    accept = c("text/plain", ".fasta")
+                    accept = c("text/plain", ".fasta", ".fst")
           ),
           fileInput("tsv",
                     "Upload MultiHits TSV File",
-                    accept = c("text/tab-separated-values", ".tsv", "text/csv")
+                    accept = c("text/tab-separated-values", ".tsv")
                    ),
           HTML("<br/>"),
           downloadButton("download", "Download", class="butt"),
