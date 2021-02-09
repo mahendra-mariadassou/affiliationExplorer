@@ -90,11 +90,18 @@ sort_ambiguous_otu <- function(physeq, affi) {
 extract_affiliation <- function(affi, otu) {
   affi %>% 
     dplyr::filter(OTU == otu) %>% 
-    dplyr::select(Kingdom:Species) %>% 
-    dplyr::distinct()
+    dplyr::distinct(dplyr::across(Kingdom:Species), .keep_all = TRUE) %>% 
+    dplyr::select(Kingdom:Species, blast_subject, blast_perc_identity, blast_perc_query_coverage) %>% 
+    dplyr::rename(`Blast ID` = blast_subject, 
+                  `%id`      = blast_perc_identity, 
+                  `%cov`     = blast_perc_query_coverage)
 }
 
-## Extract all affiliation for a given OTU
+remove_extra <- function(affi) {
+  affi %>% dplyr::select(-any_of(c("Blast ID", "%id", "%cov")))
+}
+
+## Extract sequence for a given OTU
 extract_sequence <- function(affi, otu) {
   affi %>% 
     dplyr::filter(OTU == otu) %>% 

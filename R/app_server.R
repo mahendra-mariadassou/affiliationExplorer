@@ -49,6 +49,7 @@ app_server <- function(input, output, session) {
       cleaned      = phyloseq::tax_table(physeq) %>% as("matrix"), ## All current affiliations (not only those of ambiguous OTUs)
       affi         = NULL,                                         ## Placeholder for conflicting affiliations of current OTU
       sequence     = NULL                                          ## Placeholder for current OTU sequence
+      # blast_result = NULL                                          ## Placeholder for current OTU blast result
     )
     ## Sort `cleaned` by decreasing taxa abundances
     data$cleaned <- data$cleaned[phyloseq::taxa_sums(physeq) %>% sort(decreasing = TRUE) %>% names(), ]
@@ -76,12 +77,19 @@ app_server <- function(input, output, session) {
       # Extract Affiliation for a given OTU
       data$affi <- extract_affiliation(affi, input$asv)
       data$sequence <- extract_sequence(affi, input$asv)
+      # data$blast_result <- extract_blast(affi, input$asv)
       amb <- find_level(data$affi)
       output$txt <- renderUI(HTML({paste("<p><b>", input$asv, "- ", nrow(data$affi) ,"conflicting affiliations, ambiguity at rank ", amb, "</b></p>")}))
       
       output$help <- renderUI(HTML({paste("<cite>Select new affiliation by clicking on a row (double click on a cell to edit its content).<br/>",
                                           "Click \"Update OTU\" to update affiliation (with selected row) or \"Skip OTU\" to move to the next one.</cite>")}))
       
+      ## Show alignment information
+      output$aln_info <- renderUI({
+        HTML(glue::glue())
+      })
+      
+      ## Show conflicting affiliations 
       output$table <- DT::renderDT({data$affi}, 
                                    options = list(scrollX = TRUE),
                                    selection = list(mode = 'single', selected = NULL, target = 'row'), 
@@ -95,7 +103,7 @@ app_server <- function(input, output, session) {
           HTML(paste("<b>Current affiliation:</b><br/>&nbsp;&nbsp;&nbsp;"),
                paste(data$cleaned[input$asv, ], collapse = ' / '),
                "<br/><b>to be replaced with:</b><br/>&nbsp;&nbsp;&nbsp;",
-               paste(data$affi[s, ], collapse = ' / ')
+               paste(remove_extra(data$affi)[s, ], collapse = ' / ')
           )
         }
       })
@@ -125,7 +133,7 @@ app_server <- function(input, output, session) {
       s = input$table_rows_selected
       if (length(s)) {
         ## Update affiliations
-        data$cleaned[input$asv, ] <- unlist(data$affi[s, ])
+        data$cleaned[input$asv, ] <- unlist(remove_extra(data$affi)[s, ])
         data$amb_otus <- setdiff(data$amb_otus, input$asv)
         updateSelectInput(session, "asv",
                           label =  "Select OTU",

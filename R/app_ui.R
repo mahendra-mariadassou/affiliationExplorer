@@ -57,6 +57,7 @@ app_ui <- function() {
                 htmlOutput("txt"),
                 htmlOutput("help"),
                 HTML("<br/>"),
+                # htmlOutput("aln_info"),
                 DT::DTOutput("table"),
                 htmlOutput("sequence"),
                 htmlOutput("selection")
