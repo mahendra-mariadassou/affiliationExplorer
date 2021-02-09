@@ -49,7 +49,6 @@ app_server <- function(input, output, session) {
       cleaned      = phyloseq::tax_table(physeq) %>% as("matrix"), ## All current affiliations (not only those of ambiguous OTUs)
       affi         = NULL,                                         ## Placeholder for conflicting affiliations of current OTU
       sequence     = NULL                                          ## Placeholder for current OTU sequence
-      # blast_result = NULL                                          ## Placeholder for current OTU blast result
     )
     ## Sort `cleaned` by decreasing taxa abundances
     data$cleaned <- data$cleaned[phyloseq::taxa_sums(physeq) %>% sort(decreasing = TRUE) %>% names(), ]
@@ -83,11 +82,6 @@ app_server <- function(input, output, session) {
       
       output$help <- renderUI(HTML({paste("<cite>Select new affiliation by clicking on a row (double click on a cell to edit its content).<br/>",
                                           "Click \"Update OTU\" to update affiliation (with selected row) or \"Skip OTU\" to move to the next one.</cite>")}))
-      
-      ## Show alignment information
-      output$aln_info <- renderUI({
-        HTML(glue::glue())
-      })
       
       ## Show conflicting affiliations 
       output$table <- DT::renderDT({data$affi}, 
