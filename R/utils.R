@@ -15,7 +15,9 @@ read_fasta <- function(fasta_file) {
   Biostrings::readDNAStringSet(fasta_file) %>% 
     as.character() %>% 
     tibble::tibble(OTU      = names(.), 
-                   sequence = unname(.))
+                   sequence = unname(.)) %>% 
+    dplyr::select(OTU, sequence) %>% 
+    dplyr::mutate(OTU = OTU %>% strsplit(split = " ", fixed = TRUE) %>% sapply(`[`, 1))
 }
 
 ## Functions to create short taxa names -------------------------------------
@@ -67,6 +69,7 @@ sanitize_physeq_and_affi <- function(physeq, affi, fasta) {
     if (long_taxa_names(otu_dictionary$sequence)) { 
       warning("Sequences already present in the multihits files.\nFasta file not used.")
     } else {
+      ## FROGS rather than DADA2, keep sequences from fasta file
       affi <- affi %>% dplyr::select(-sequence) %>% dplyr::left_join(fasta, by = "OTU")
     }
   }
