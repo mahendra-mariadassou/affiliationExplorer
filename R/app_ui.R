@@ -25,7 +25,7 @@ app_ui <- function() {
           ),
           fileInput("tsv",
                     "Upload MultiHits TSV File",
-                    accept = c("text/tab-separated-values", ".tsv")
+                    accept = c("text/tab-separated-values", ".tsv", ".tabular")
                    ),
           HTML("<br/>"),
           downloadButton("download", "Download", class="butt"),
