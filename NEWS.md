@@ -1,5 +1,9 @@
 # affiliationExplorer
 
+**Version 0.0.1.1**
+
+- Better compatibility with FROGS outputs
+
 **Version 0.0.1.0**
 
 - Add more columns to affiliation table as suggested by Géraldine
