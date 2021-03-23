@@ -34,6 +34,8 @@ app_server <- function(input, output, session) {
     
     # Read the biom file --> phyloseq
     biomfile <- read_frogs_biom(input$biom$datapath)
+    # read the cluster metadata --> list
+    otu_metadata <- read_biom_rows(input$biom$datapath)
     # Read the optional fasta file --> read_fasta
     fasta <- read_fasta(input$fasta$datapath)
     # Read the tsv file --> readr
@@ -126,7 +128,7 @@ app_server <- function(input, output, session) {
     observeEvent(input$clean, {
       s = input$table_rows_selected
       if (length(s)) {
-        ## Update affiliations
+        ## Update affiliations in tabular data
         data$cleaned[input$asv, ] <- unlist(remove_extra(data$affi)[s, ])
         data$amb_otus <- setdiff(data$amb_otus, input$asv)
         updateSelectInput(session, "asv",
@@ -169,7 +171,8 @@ app_server <- function(input, output, session) {
         phyloseq.extended::write_phyloseq(
           physeq = physeq, 
           biom_file = con, 
-          biom_format = "frogs"
+          biom_format = "frogs", 
+          rows_metadata = otu_metadata
         )
       })
     

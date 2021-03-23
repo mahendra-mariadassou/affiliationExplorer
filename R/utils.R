@@ -3,6 +3,11 @@ read_frogs_biom <- function(biom_file) {
   phyloseq.extended::import_frogs(biom_file)
 }
 
+## Template for reading OTU metadata
+read_biom_rows <- function(biom_file) {
+  rows <- biomformat::read_biom(biom_file)$rows
+}
+
 ## Template for reading tsv files
 read_multihits <- function(multihits_file) {
   readr::read_tsv(multihits_file)
