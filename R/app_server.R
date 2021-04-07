@@ -20,11 +20,12 @@ app_server <- function(input, output, session) {
   shinyjs::hide("skip")
   shinyjs::hide("download")
   
-  output$tmptxt <- renderUI(HTML("<p>Please upload your data (Biom file and MultiHits TSV file).</p>"))
+  output$tmptxt <- renderUI(HTML("<p>Please upload your data (Biom file, MultiHits TSV file and optional fasta file).</p>"))
   output$tmptxt2 <- renderUI(HTML("<p>Please upload your data (Biom file and MultiHits TSV file).</p><br/><br/>"))
   
-  observeEvent(input$tsv, {
+  observeEvent(input$upload, {
     
+    shinyjs::hide("upload")
     shinyjs::show("clean")
     shinyjs::show("skip")
     shinyjs::show("download")
