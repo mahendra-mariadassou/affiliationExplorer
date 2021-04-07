@@ -28,7 +28,8 @@ app_ui <- function() {
                     accept = c("text/tab-separated-values", ".tsv", ".tabular")
                    ),
           HTML("<br/>"),
-          downloadButton("download", "Download", class="butt"),
+          actionButton("upload", "Submit data", class = "butt", icon = icon("cloud-upload")),
+          downloadButton("download", "Download data", class="butt"),
           tags$head(tags$style(".butt{color: black !important; margin-left: 16px; }"))
         )
       ),
