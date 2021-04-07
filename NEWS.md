@@ -1,5 +1,13 @@
 # affiliationExplorer
 
+**Version 0.0.1.3**
+
+- Add explicit submit button
+
+**Version 0.0.1.2**
+
+- Add support for empty taxonomic affiliations
+
 **Version 0.0.1.1**
 
 - Better compatibility with FROGS outputs
